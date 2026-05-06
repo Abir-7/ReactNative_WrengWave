@@ -1,6 +1,6 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
 export default function RoleSelectionScreen() {
   const router = useRouter();
@@ -29,7 +29,9 @@ export default function RoleSelectionScreen() {
           </View>
           <View className="flex-1">
             <Text className="text-xl font-bold text-gray-900">Customer</Text>
-            <Text className="text-gray-500">I want to find mechanics for my vehicle</Text>
+            <Text className="text-gray-500">
+              I want to find mechanics for my vehicle
+            </Text>
           </View>
           <Ionicons name="chevron-forward" size={24} color="#9ca3af" />
         </TouchableOpacity>
@@ -43,17 +45,21 @@ export default function RoleSelectionScreen() {
           </View>
           <View className="flex-1">
             <Text className="text-xl font-bold text-gray-900">Mechanic</Text>
-            <Text className="text-gray-500">I want to offer my repair services</Text>
+            <Text className="text-gray-500">
+              I want to offer my repair services
+            </Text>
           </View>
           <Ionicons name="chevron-forward" size={24} color="#9ca3af" />
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         onPress={() => router.back()}
         className="mt-10 items-center"
       >
-        <Text className="text-blue-600 font-semibold">Already have an account? Login</Text>
+        <Text className="text-blue-600 font-semibold">
+          Already have an account? Login
+        </Text>
       </TouchableOpacity>
     </View>
   );
