@@ -1,6 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
 import { authService } from "@/services/auth.service";
 import { useAuthStore } from "@/store/auth.store";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
 
@@ -9,13 +9,14 @@ export function useLogin() {
   const setUser = useAuthStore((state) => state.setUser);
 
   return useMutation({
-    mutationFn: ({ email, password }: any) => authService.login(email, password),
+    mutationFn: ({ email, password }: any) =>
+      authService.login(email, password),
     onSuccess: (data) => {
       setUser({
         role: data.role,
-        name: data.name,
-        token: data.token,
-        image_url: data.image_url,
+        name: data.name || "",
+        token: data?.token,
+        image_url: data?.image_url || "",
         email: data.email,
       });
 
@@ -26,7 +27,10 @@ export function useLogin() {
       }
     },
     onError: (error: any) => {
-      Alert.alert("Login Failed", error.response?.data?.message || "Something went wrong");
+      Alert.alert(
+        "Login Failed",
+        error.response?.data?.message || "Something went wrong",
+      );
     },
   });
 }
@@ -43,7 +47,10 @@ export function useSignup() {
       });
     },
     onError: (error: any) => {
-      Alert.alert("Signup Failed", error.response?.data?.message || "Something went wrong");
+      Alert.alert(
+        "Signup Failed",
+        error.response?.data?.message || "Something went wrong",
+      );
     },
   });
 }
@@ -60,7 +67,10 @@ export function useForgotPassword() {
       });
     },
     onError: (error: any) => {
-      Alert.alert("Error", error.response?.data?.message || "Could not send reset code");
+      Alert.alert(
+        "Error",
+        error.response?.data?.message || "Could not send reset code",
+      );
     },
   });
 }
@@ -69,7 +79,8 @@ export function useVerifyOtp() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: ({ email, otp, type }: any) => authService.verifyOtp(email, otp, type),
+    mutationFn: ({ email, otp, type }: any) =>
+      authService.verifyOtp(email, otp, type),
     onSuccess: (_, variables) => {
       if (variables.type === "signup") {
         router.replace("/");
@@ -81,7 +92,10 @@ export function useVerifyOtp() {
       }
     },
     onError: (error: any) => {
-      Alert.alert("Verification Failed", error.response?.data?.message || "Invalid OTP");
+      Alert.alert(
+        "Verification Failed",
+        error.response?.data?.message || "Invalid OTP",
+      );
     },
   });
 }
@@ -97,7 +111,10 @@ export function useResetPassword() {
       ]);
     },
     onError: (error: any) => {
-      Alert.alert("Error", error.response?.data?.message || "Failed to reset password");
+      Alert.alert(
+        "Error",
+        error.response?.data?.message || "Failed to reset password",
+      );
     },
   });
 }
