@@ -51,10 +51,15 @@ export default function VerifyOtpScreen() {
       </View>
 
       <TouchableOpacity
-        className="bg-black py-4 rounded-xl items-center mb-6"
+        className={`bg-black py-4 rounded-xl items-center mb-6 ${verifyOtpMutation.isPending ? 'opacity-70' : ''}`}
         onPress={handleVerify}
+        disabled={verifyOtpMutation.isPending}
       >
-        <Text className="text-white font-bold text-base">Verify</Text>
+        {verifyOtpMutation.isPending ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <Text className="text-white font-bold text-base">Verify</Text>
+        )}
       </TouchableOpacity>
 
       <View className="flex-row justify-center">

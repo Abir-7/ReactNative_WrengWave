@@ -1,7 +1,8 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, ActivityIndicator, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useResetPassword } from "@/hooks/useAuth";
 
 export default function ResetPasswordScreen() {
   const router = useRouter();
@@ -10,15 +11,14 @@ export default function ResetPasswordScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const resetPasswordMutation = useResetPassword();
+
   const handleResetPassword = () => {
-    // Implement password reset logic here
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      Alert.alert("Error", "Passwords do not match");
       return;
     }
-    console.log("Resetting password for:", email, "with OTP:", otp);
-    // After success, redirect to login
-    router.replace("/");
+    resetPasswordMutation.mutate({ email, otp, password });
   };
 
   return (
@@ -62,10 +62,15 @@ export default function ResetPasswordScreen() {
       </View>
 
       <TouchableOpacity
-        className="bg-black py-4 rounded-xl items-center"
+        className={`bg-black py-4 rounded-xl items-center ${resetPasswordMutation.isPending ? 'opacity-70' : ''}`}
         onPress={handleResetPassword}
+        disabled={resetPasswordMutation.isPending}
       >
-        <Text className="text-white font-bold text-base">Reset Password</Text>
+        {resetPasswordMutation.isPending ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <Text className="text-white font-bold text-base">Reset Password</Text>
+        )}
       </TouchableOpacity>
     </View>
   );

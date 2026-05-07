@@ -1,7 +1,8 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, ScrollView } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, ScrollView, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useSignup } from "@/hooks/useAuth";
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -12,15 +13,14 @@ export default function SignupScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const signupMutation = useSignup();
+
   const handleSignup = () => {
-    // Implement signup logic here
-    console.log("Signing up as:", role, { name, email, password });
-    
-    // After success, redirect to verify OTP screen
-    router.push({
-      pathname: "/(auth)/verify-otp",
-      params: { email, type: "signup" }
-    });
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+    signupMutation.mutate({ name, email, password, role });
   };
 
   return (
@@ -89,10 +89,15 @@ export default function SignupScreen() {
         </View>
 
         <TouchableOpacity
-          className="bg-black py-4 rounded-xl items-center mt-10"
+          className={`bg-black py-4 rounded-xl items-center mt-10 ${signupMutation.isPending ? 'opacity-70' : ''}`}
           onPress={handleSignup}
+          disabled={signupMutation.isPending}
         >
-          <Text className="text-white font-bold text-base">Sign Up</Text>
+          {signupMutation.isPending ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text className="text-white font-bold text-base">Sign Up</Text>
+          )}
         </TouchableOpacity>
 
         <View className="flex-row justify-center mt-6">

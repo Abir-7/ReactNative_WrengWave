@@ -1,31 +1,27 @@
-import { useAuthStore } from "@/store/auth.store";
+import { useLogin } from "@/hooks/useAuth";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function LoginScreen() {
   const router = useRouter();
-  const setUser = useAuthStore((state) => state.setUser);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const loginMutation = useLogin();
 
-  const handleLogin = async () => {
-    // Replace with your real API call
-    const response = await fakeLoginApi(email, password);
-
-    setUser({
-      role: response.role,
-      name: response.name,
-      token: response.token,
-      image_url: response.image_url,
-      email: response.email,
-    });
-
-    if (response.role === "admin") {
-      router.replace("/(admin)/home");
-    } else {
-      router.replace("/(user)/home");
+  const handleLogin = () => {
+    if (!email || !password) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
     }
+    loginMutation.mutate({ email, password });
   };
 
   return (
@@ -36,6 +32,8 @@ export default function LoginScreen() {
         className="border border-gray-300 rounded-xl px-4 py-3 mb-4 text-base text-gray-900"
         placeholder="Email"
         placeholderTextColor="#9ca3af"
+        autoCapitalize="none"
+        keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
       />
@@ -48,7 +46,7 @@ export default function LoginScreen() {
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity 
+      <TouchableOpacity
         className="self-end mb-6"
         onPress={() => router.push("/(auth)/forgot-password")}
       >
@@ -56,28 +54,23 @@ export default function LoginScreen() {
       </TouchableOpacity>
 
       <TouchableOpacity
-        className="bg-black py-4 rounded-xl items-center"
+        className={`bg-black py-4 rounded-xl items-center ${loginMutation.isPending ? "opacity-70" : ""}`}
         onPress={handleLogin}
+        disabled={loginMutation.isPending}
       >
-        <Text className="text-white font-bold text-base">Login</Text>
+        {loginMutation.isPending ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <Text className="text-white font-bold text-base">Login</Text>
+        )}
       </TouchableOpacity>
 
       <View className="flex-row justify-center mt-8">
-        <Text className="text-gray-600">Don't have an account? </Text>
+        <Text className="text-gray-600">Don&apos;t have an account? </Text>
         <TouchableOpacity onPress={() => router.push("/(auth)/role-selection")}>
           <Text className="text-blue-600 font-bold">Sign Up</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
-}
-
-async function fakeLoginApi(email: string, password: string) {
-  return {
-    role: email.includes("admin") ? "admin" : ("user" as "admin" | "user"),
-    name: "John Doe",
-    token: "abc123token",
-    image_url: "https://i.pravatar.cc/150",
-    email,
-  };
 }
