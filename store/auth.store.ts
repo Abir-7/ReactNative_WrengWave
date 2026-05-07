@@ -1,8 +1,9 @@
+import { GetMeResponse } from "@/types/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-interface User {
+export interface User extends Partial<GetMeResponse> {
   role: "admin" | "user";
   name: string;
   token: string;
@@ -14,6 +15,7 @@ interface AuthState {
   user: User | null;
   isLoading: boolean;
   setUser: (user: User) => void;
+  setProfile: (profile: Partial<User>) => void;
   clearUser: () => void;
 }
 
@@ -23,6 +25,10 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isLoading: true, // ← default true
       setUser: (user) => set({ user }),
+      setProfile: (profile) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, ...profile } : null,
+        })),
       clearUser: () => set({ user: null }),
     }),
     {

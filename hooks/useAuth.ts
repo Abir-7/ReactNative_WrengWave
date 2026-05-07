@@ -1,5 +1,10 @@
 import { authService } from "@/services/auth.service";
 import { useAuthStore } from "@/store/auth.store";
+import {
+  ResetPasswordPayload,
+  SignupPayload,
+  VerifyOtpPayload,
+} from "@/types/auth";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
@@ -7,11 +12,13 @@ import { Alert } from "react-native";
 export function useLogin() {
   const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
+  const setProfile = useAuthStore((state) => state.setProfile);
 
   return useMutation({
     mutationFn: ({ email, password }: any) =>
       authService.login(email, password),
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      // First set the basic info from login
       setUser({
         role: data.role,
         name: data.name || "",
@@ -19,6 +26,14 @@ export function useLogin() {
         image_url: data?.image_url || "",
         email: data.email,
       });
+
+      // Then fetch the full profile
+      try {
+        const profile = await authService.getMe();
+        setProfile(profile);
+      } catch (error) {
+        console.error("Failed to fetch profile after login:", error);
+      }
 
       if (data.role === "admin") {
         router.replace("/(admin)/home");
@@ -35,11 +50,28 @@ export function useLogin() {
   });
 }
 
+export function useGetMe() {
+  const setProfile = useAuthStore((state) => state.setProfile);
+  const clearUser = useAuthStore((state) => state.clearUser);
+
+  return useMutation({
+    mutationFn: () => authService.getMe(),
+    onSuccess: (data) => {
+      setProfile(data);
+    },
+    onError: (error: any) => {
+      if (error.response?.status === 401) {
+        clearUser();
+      }
+    },
+  });
+}
+
 export function useSignup() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: (data: any) => authService.signup(data),
+    mutationFn: (data: SignupPayload) => authService.signup(data),
     onSuccess: (_, variables) => {
       router.push({
         pathname: "/(auth)/verify-otp",
@@ -79,8 +111,7 @@ export function useVerifyOtp() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: ({ email, otp, type }: any) =>
-      authService.verifyOtp(email, otp, type),
+    mutationFn: (data: VerifyOtpPayload) => authService.verifyOtp(data),
     onSuccess: (_, variables) => {
       if (variables.type === "signup") {
         router.replace("/");
@@ -104,7 +135,7 @@ export function useResetPassword() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: (data: any) => authService.resetPassword(data),
+    mutationFn: (data: ResetPasswordPayload) => authService.resetPassword(data),
     onSuccess: () => {
       Alert.alert("Success", "Password reset successfully", [
         { text: "OK", onPress: () => router.replace("/") },
