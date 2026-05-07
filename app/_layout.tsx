@@ -35,7 +35,7 @@ function RootLayoutNav() {
       <StatusBar style="dark" backgroundColor="#ffffff" />
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="about" options={{ headerShown: false }} />
+
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(mechanic)" options={{ headerShown: false }} />
         <Stack.Screen name="(user)" options={{ headerShown: false }} />

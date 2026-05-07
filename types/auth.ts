@@ -5,6 +5,8 @@ export interface LoginResponse {
   access_token: string;
   refresh_token: string;
   user_id: string;
+  is_mechanic_data_complete: boolean;
+  is_user_car_data_complete: boolean;
 }
 
 export interface SignupPayload {
