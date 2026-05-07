@@ -40,13 +40,20 @@ export default function LoginScreen() {
         onChangeText={setEmail}
       />
       <TextInput
-        className="border border-gray-300 rounded-xl px-4 py-3 mb-6 text-base text-gray-900"
+        className="border border-gray-300 rounded-xl px-4 py-3 mb-2 text-base text-gray-900"
         placeholder="Password"
         placeholderTextColor="#9ca3af"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
+
+      <TouchableOpacity 
+        className="self-end mb-6"
+        onPress={() => router.push("/(auth)/forgot-password")}
+      >
+        <Text className="text-blue-600 font-medium">Forgot Password?</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity
         className="bg-black py-4 rounded-xl items-center"

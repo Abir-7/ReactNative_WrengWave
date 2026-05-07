@@ -15,8 +15,12 @@ export default function SignupScreen() {
   const handleSignup = () => {
     // Implement signup logic here
     console.log("Signing up as:", role, { name, email, password });
-    // After success, maybe redirect to login or auto-login
-    router.replace("/");
+    
+    // After success, redirect to verify OTP screen
+    router.push({
+      pathname: "/(auth)/verify-otp",
+      params: { email, type: "signup" }
+    });
   };
 
   return (
