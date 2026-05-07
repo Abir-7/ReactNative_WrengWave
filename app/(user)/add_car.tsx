@@ -1,4 +1,4 @@
-import { FormImage } from "@/components/ui/form-image";
+import { FormImageUploader } from "@/components/ui/form-image-uploader";
 import { FormInput } from "@/components/ui/form-input";
 import { FormWrapper } from "@/components/ui/form-wrapper";
 import { CarFormData, carSchema } from "@/schemas/car.schema";
@@ -33,7 +33,7 @@ export default function AddCar() {
         showBackButton
         onBack={() => router.back()}
       >
-        <FormImage name="image" label="Car Image" />
+        <FormImageUploader name="image" label="Car Image" />
         
         <FormInput
           name="brand"
