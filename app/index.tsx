@@ -18,8 +18,8 @@ export default function Index() {
 
   // Already logged in → redirect based on role
   if (user?.token) {
-    if (user.role === "admin") {
-      return <Redirect href="/(admin)/home" />;
+    if (user.role === "mechanic") {
+      return <Redirect href="/(mechanic)/home" />;
     }
     return <Redirect href="/(user)/home" />;
   }

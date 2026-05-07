@@ -2,9 +2,9 @@ import { GetMeResponse } from "@/types/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-
+export type UserRole = "customer" | "mechanic";
 export interface User extends Partial<GetMeResponse> {
-  role: "admin" | "user";
+  role: UserRole;
   name: string;
   token: string;
   image_url: string;

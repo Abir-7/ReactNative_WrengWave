@@ -1,3 +1,4 @@
+import { UserRole } from "@/store/auth.store";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -5,7 +6,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 export default function RoleSelectionScreen() {
   const router = useRouter();
 
-  const selectRole = (role: "customer" | "mechanic") => {
+  const selectRole = (role: UserRole) => {
     router.push({
       pathname: "/(auth)/signup",
       params: { role },

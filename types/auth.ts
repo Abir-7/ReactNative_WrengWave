@@ -1,5 +1,7 @@
+import { UserRole } from "@/store/auth.store";
+
 export interface LoginResponse {
-  role: "admin" | "user";
+  role: UserRole;
   name?: string;
   token: string;
   image_url?: string;
@@ -10,7 +12,7 @@ export interface SignupPayload {
   email: string;
   password?: string;
   name?: string;
-  role?: "admin" | "user";
+  role?: UserRole;
   [key: string]: any;
 }
 
@@ -31,7 +33,7 @@ export interface GetMeResponse {
   id: string;
   email: string;
   name: string;
-  role: "admin" | "user";
+  role: UserRole;
   image_url: string;
   is_verified: boolean;
   created_at: string;

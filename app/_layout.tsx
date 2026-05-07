@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+
 import { useGetMe } from "@/hooks/useAuth";
 import { useAuthStore } from "@/store/auth.store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -34,7 +35,7 @@ function RootLayoutNav() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="about" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+        <Stack.Screen name="(mechanic)" options={{ headerShown: false }} />
         <Stack.Screen name="(user)" options={{ headerShown: false }} />
       </Stack>
     </>

@@ -1,76 +1,55 @@
+import { FormInput } from "@/components/ui/form-input";
+import { FormWrapper } from "@/components/ui/form-wrapper";
 import { useLogin } from "@/hooks/useAuth";
+import { LoginFormValues, loginSchema } from "@/schemas/auth.schema";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 
 export default function LoginScreen() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const loginMutation = useLogin();
 
-  const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert("Error", "Please fill in all fields");
-      return;
-    }
-    loginMutation.mutate({ email, password });
+  const onSubmit = (data: LoginFormValues) => {
+    loginMutation.mutate(data);
   };
 
   return (
-    <View className="flex-1 justify-center px-6 bg-white">
-      <Text className="text-3xl font-bold mb-8 text-gray-900">Login</Text>
-
-      <TextInput
-        className="border border-gray-300 rounded-xl px-4 py-3 mb-4 text-base text-gray-900"
+    <FormWrapper<LoginFormValues>
+      title="Login"
+      submitLabel="Login"
+      isPending={loginMutation.isPending}
+      onSubmit={onSubmit}
+      schema={loginSchema}
+      defaultValues={{
+        email: "",
+        password: "",
+      }}
+      footerContent={
+        <>
+          <Text className="text-gray-600">Don&apos;t have an account? </Text>
+          <TouchableOpacity
+            onPress={() => router.push("/(auth)/role-selection")}
+          >
+            <Text className="text-blue-600 font-bold">Sign Up</Text>
+          </TouchableOpacity>
+        </>
+      }
+    >
+      <FormInput
+        name="email"
         placeholder="Email"
-        placeholderTextColor="#9ca3af"
-        autoCapitalize="none"
         keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
+        autoCapitalize="none"
       />
-      <TextInput
-        className="border border-gray-300 rounded-xl px-4 py-3 mb-2 text-base text-gray-900"
-        placeholder="Password"
-        placeholderTextColor="#9ca3af"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+
+      <FormInput name="password" placeholder="Password" secureTextEntry />
 
       <TouchableOpacity
-        className="self-end mb-6"
+        className="self-end -mt-2"
         onPress={() => router.push("/(auth)/forgot-password")}
       >
         <Text className="text-blue-600 font-medium">Forgot Password?</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity
-        className={`bg-black py-4 rounded-xl items-center ${loginMutation.isPending ? "opacity-70" : ""}`}
-        onPress={handleLogin}
-        disabled={loginMutation.isPending}
-      >
-        {loginMutation.isPending ? (
-          <ActivityIndicator color="white" />
-        ) : (
-          <Text className="text-white font-bold text-base">Login</Text>
-        )}
-      </TouchableOpacity>
-
-      <View className="flex-row justify-center mt-8">
-        <Text className="text-gray-600">Don&apos;t have an account? </Text>
-        <TouchableOpacity onPress={() => router.push("/(auth)/role-selection")}>
-          <Text className="text-blue-600 font-bold">Sign Up</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </FormWrapper>
   );
 }

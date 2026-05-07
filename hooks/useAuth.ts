@@ -35,8 +35,8 @@ export function useLogin() {
         console.error("Failed to fetch profile after login:", error);
       }
 
-      if (data.role === "admin") {
-        router.replace("/(admin)/home");
+      if (data.role === "mechanic") {
+        router.replace("/(mechanic)/home");
       } else {
         router.replace("/(user)/home");
       }
