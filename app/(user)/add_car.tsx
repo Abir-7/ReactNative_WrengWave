@@ -1,12 +1,10 @@
 import React from "react";
-import { Text, View } from "react-native";
-
-const Add_car = () => {
+import { Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+export default function add_car() {
   return (
-    <View>
+    <SafeAreaView>
       <Text>add_car</Text>
-    </View>
+    </SafeAreaView>
   );
-};
-
-export default Add_car;
+}

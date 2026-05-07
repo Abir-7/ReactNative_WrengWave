@@ -24,6 +24,12 @@ export default function UserLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="add_car"
+        options={{
+          href: "/(user)/add_car", // 👈 this removes it from the tab bar
+        }}
+      />
     </Tabs>
   );
 }

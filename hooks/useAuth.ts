@@ -55,9 +55,17 @@ export function useLogin() {
       }
 
       if (data.role === "mechanic") {
-        router.replace("/(mechanic)/home");
+        if (data.is_mechanic_data_complete) {
+          router.replace("/(mechanic)/home");
+        } else {
+          router.replace("/(mechanic)/add_mechanic_data");
+        }
       } else {
-        router.replace("/(user)/home");
+        if (data.is_user_car_data_complete) {
+          router.replace("/(user)/home");
+        } else {
+          router.replace("/(user)/add_car");
+        }
       }
     },
     onError: (error: any) => {
