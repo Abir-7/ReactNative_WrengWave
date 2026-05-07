@@ -21,7 +21,7 @@ export default function LoginScreen() {
       onSubmit={onSubmit}
       schema={loginSchema}
       defaultValues={{
-        email: "",
+        user_email: "",
         password: "",
       }}
       footerContent={
@@ -36,7 +36,7 @@ export default function LoginScreen() {
       }
     >
       <FormInput
-        name="email"
+        name="user_email"
         placeholder="Email"
         keyboardType="email-address"
         autoCapitalize="none"

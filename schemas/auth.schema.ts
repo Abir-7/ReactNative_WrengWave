@@ -1,7 +1,10 @@
 import * as z from "zod";
 
 export const loginSchema = z.object({
-  email: z.string().email("Invalid email address").min(1, "Email is required"),
+  user_email: z
+    .string()
+    .email("Invalid email address")
+    .min(1, "Email is required"),
   password: z
     .string()
     .min(1, "Password is required")
@@ -11,7 +14,10 @@ export const loginSchema = z.object({
 export const signupSchema = z
   .object({
     full_name: z.string().min(1, "Full name is required"),
-    email: z.string().email("Invalid email address").min(1, "Email is required"),
+    email: z
+      .string()
+      .email("Invalid email address")
+      .min(1, "Email is required"),
     password: z
       .string()
       .min(1, "Password is required")
@@ -24,14 +30,11 @@ export const signupSchema = z
   });
 
 export const forgotPasswordSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Invalid email address"),
+  email: z.string().min(1, "Email is required").email("Invalid email address"),
 });
 
 export const verifyOtpSchema = z.object({
-  otp: z.string().length(4, "OTP must be 4 digits"),
+  otp: z.string().length(6, "OTP must be 4 digits"),
 });
 
 export const resetPasswordSchema = z

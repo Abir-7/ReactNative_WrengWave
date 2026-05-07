@@ -2,10 +2,9 @@ import { UserRole } from "@/store/auth.store";
 
 export interface LoginResponse {
   role: UserRole;
-  name?: string;
-  token: string;
-  image_url?: string;
-  email: string;
+  access_token: string;
+  refresh_token: string;
+  user_id: string;
 }
 
 export interface SignupPayload {
@@ -13,13 +12,18 @@ export interface SignupPayload {
   password?: string;
   name?: string;
   role?: UserRole;
-  [key: string]: any;
+}
+export interface SignupResponse {
+  email: string;
+  user_id: string;
+
+  role?: UserRole;
 }
 
 export interface VerifyOtpPayload {
-  email: string;
-  otp: string;
-  type: "signup" | "forgot-password";
+  user_id: string;
+  code: string;
+  type?: "signup" | "forgot-password";
 }
 
 export interface ResetPasswordPayload {
@@ -32,10 +36,11 @@ export interface ResetPasswordPayload {
 export interface GetMeResponse {
   id: string;
   email: string;
-  name: string;
   role: UserRole;
-  image_url: string;
-  is_verified: boolean;
-  created_at: string;
-  updated_at: string;
+  is_active: boolean;
+  profile: {
+    full_name: string;
+    bio: string;
+    avatar_url: string;
+  };
 }

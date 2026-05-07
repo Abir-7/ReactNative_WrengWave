@@ -9,6 +9,8 @@ export interface User extends Partial<GetMeResponse> {
   token: string;
   image_url: string;
   email: string;
+  user_id: string;
+  refresh_token: string;
 }
 
 interface AuthState {

@@ -1,8 +1,10 @@
 import { authService } from "@/services/auth.service";
 import { useAuthStore } from "@/store/auth.store";
 import {
+  LoginResponse,
   ResetPasswordPayload,
   SignupPayload,
+  SignupResponse,
   VerifyOtpPayload,
 } from "@/types/auth";
 import { useMutation } from "@tanstack/react-query";
@@ -15,28 +17,39 @@ export function useLogin() {
   const setProfile = useAuthStore((state) => state.setProfile);
 
   return useMutation({
-    mutationFn: ({ email, password }: any) =>
-      authService.login(email, password),
+    mutationFn: ({
+      user_email,
+      password,
+    }: {
+      user_email: string;
+      password: string;
+    }): Promise<LoginResponse> => authService.login(user_email, password),
     onSuccess: async (data) => {
       Toast.show({
         type: "success",
         text1: "Login Successful",
-        text2: `Welcome back, ${data.name || data.email}`,
+        text2: `Welcome back`,
       });
 
       // First set the basic info from login
       setUser({
         role: data.role,
-        name: data.name || "",
-        token: data?.token,
-        image_url: data?.image_url || "",
-        email: data.email,
+        name: "",
+        token: data?.access_token,
+        image_url: "",
+        email: "",
+        user_id: data.user_id,
+        refresh_token: data?.refresh_token,
       });
 
       // Then fetch the full profile
       try {
         const profile = await authService.getMe();
-        setProfile(profile);
+        setProfile({
+          email: profile.email || "",
+          image_url: profile.profile.avatar_url || "",
+          name: profile.profile.full_name || "",
+        });
       } catch (error) {
         console.error("Failed to fetch profile after login:", error);
       }
@@ -78,7 +91,8 @@ export function useSignup() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: (data: SignupPayload) => authService.signup(data),
+    mutationFn: (data: SignupPayload): Promise<SignupResponse> =>
+      authService.signup(data),
     onSuccess: (_, variables) => {
       Toast.show({
         type: "success",
@@ -87,10 +101,11 @@ export function useSignup() {
       });
       router.push({
         pathname: "/(auth)/verify-otp",
-        params: { email: variables.email, type: "signup" },
+        params: { email: variables.email, type: "signup", user_id: _.user_id },
       });
     },
     onError: (error: any) => {
+      console.log(error);
       Toast.show({
         type: "error",
         text1: "Signup Failed",
@@ -126,11 +141,12 @@ export function useForgotPassword() {
   });
 }
 
-export function useVerifyOtp() {
+export function useVerifyUser() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: (data: VerifyOtpPayload) => authService.verifyOtp(data),
+    mutationFn: (data: VerifyOtpPayload) =>
+      authService.verifyUser({ code: data.code, user_id: data.user_id }),
     onSuccess: (_, variables) => {
       Toast.show({
         type: "success",
@@ -142,7 +158,7 @@ export function useVerifyOtp() {
       } else {
         router.push({
           pathname: "/(auth)/reset-password",
-          params: { email: variables.email, otp: variables.otp },
+          params: { user_id: variables.user_id, otp: variables.code },
         });
       }
     },

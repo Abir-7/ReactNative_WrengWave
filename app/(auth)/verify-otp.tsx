@@ -1,24 +1,25 @@
 import { FormInput } from "@/components/ui/form-input";
 import { FormWrapper } from "@/components/ui/form-wrapper";
-import { useVerifyOtp } from "@/hooks/useAuth";
+import { useVerifyUser } from "@/hooks/useAuth";
 import { VerifyOtpFormValues, verifyOtpSchema } from "@/schemas/auth.schema";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function VerifyOtpScreen() {
   const router = useRouter();
-  const { email, type } = useLocalSearchParams<{
+  const { email, type, user_id } = useLocalSearchParams<{
     email: string;
     type: "signup" | "forgot-password";
+    user_id: string;
   }>();
 
-  const verifyOtpMutation = useVerifyOtp();
+  const verifyOtpMutation = useVerifyUser();
 
   const onSubmit = (data: VerifyOtpFormValues) => {
     verifyOtpMutation.mutate({
-      email,
-      otp: data.otp,
-      type,
+      user_id,
+      code: data.otp,
+      type: type,
     });
   };
 
@@ -44,10 +45,10 @@ export default function VerifyOtpScreen() {
     >
       <FormInput
         name="otp"
-        placeholder="0000"
+        placeholder="000000"
         placeholderTextColor="#9ca3af"
         keyboardType="number-pad"
-        maxLength={4}
+        maxLength={6}
         inputClassName="text-center text-2xl font-bold tracking-widest"
       />
     </FormWrapper>

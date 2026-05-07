@@ -8,8 +8,14 @@ import {
 import apiClient from "../api/client";
 
 export const authService = {
-  login: async (email: string, password: string): Promise<LoginResponse> => {
-    const response = await apiClient.post("/auth/login", { email, password });
+  login: async (
+    user_email: string,
+    password: string,
+  ): Promise<LoginResponse> => {
+    const response = await apiClient.post("/auth/login", {
+      user_email,
+      password,
+    });
     return response.data;
   },
 
@@ -23,8 +29,8 @@ export const authService = {
     return response.data;
   },
 
-  verifyOtp: async (data: VerifyOtpPayload) => {
-    const response = await apiClient.post("/auth/verify-otp", data);
+  verifyUser: async (data: VerifyOtpPayload) => {
+    const response = await apiClient.post("/auth/verify-user", data);
     return response.data;
   },
 
@@ -34,7 +40,7 @@ export const authService = {
   },
 
   getMe: async (): Promise<GetMeResponse> => {
-    const response = await apiClient.get("/auth/me");
+    const response = await apiClient.get("/common/me");
     return response.data;
   },
 };
