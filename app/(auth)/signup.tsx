@@ -13,7 +13,8 @@ export default function SignupScreen() {
   const signupMutation = useSignup();
 
   const onSubmit = (data: SignupFormValues) => {
-    signupMutation.mutate({ ...data, role });
+    const { confirm_password, full_name, ...rest } = data;
+    signupMutation.mutate({ ...rest, name: full_name, role });
   };
 
   return (
@@ -25,10 +26,10 @@ export default function SignupScreen() {
       onSubmit={onSubmit}
       schema={signupSchema}
       defaultValues={{
-        name: "",
+        full_name: "",
         email: "",
         password: "",
-        confirmPassword: "",
+        confirm_password: "",
       }}
       showBackButton
       onBack={() => router.back()}
@@ -41,7 +42,7 @@ export default function SignupScreen() {
         </>
       }
     >
-      <FormInput label="Full Name" name="name" placeholder="John Doe" />
+      <FormInput label="Full Name" name="full_name" placeholder="John Doe" />
 
       <FormInput
         label="Email Address"
@@ -60,7 +61,7 @@ export default function SignupScreen() {
 
       <FormInput
         label="Confirm Password"
-        name="confirmPassword"
+        name="confirm_password"
         placeholder="••••••••"
         secureTextEntry
       />

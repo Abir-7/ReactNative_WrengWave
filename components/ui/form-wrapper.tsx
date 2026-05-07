@@ -46,6 +46,8 @@ export const FormWrapper = <T extends FieldValues>({
   const methods = useForm<T>({
     resolver: zodResolver(schema),
     defaultValues,
+    mode: "onSubmit",
+    reValidateMode: "onChange",
   });
 
   return (

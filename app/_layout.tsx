@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import Toast from "react-native-toast-message";
 import "../global.css";
 
 const queryClient = new QueryClient();
@@ -14,6 +15,7 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <RootLayoutNav />
+      <Toast />
     </QueryClientProvider>
   );
 }

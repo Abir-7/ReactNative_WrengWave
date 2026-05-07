@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, useFormContext, useFormState } from "react-hook-form";
 import {
   Text,
   TextInput,
@@ -24,10 +24,12 @@ export const FormInput = ({
   secureTextEntry,
   ...textInputProps
 }: FormInputProps) => {
-  const {
+  const { control } = useFormContext();
+  const { errors } = useFormState({
     control,
-    formState: { errors },
-  } = useFormContext();
+    name,
+  });
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -51,6 +53,7 @@ export const FormInput = ({
               } rounded-xl px-4 py-3 text-base text-gray-900 ${
                 isPasswordField ? "pr-12" : ""
               } ${inputClassName}`}
+              style={error ? { borderColor: "#ef4444" } : {}}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -73,7 +76,14 @@ export const FormInput = ({
           </View>
         )}
       />
-      {error && <Text className="text-red-500 text-sm mt-1 ml-1">{error}</Text>}
+      {error && (
+        <Text 
+          className="text-red-500 text-sm mt-1 ml-1"
+          style={{ color: "#ef4444" }}
+        >
+          {error}
+        </Text>
+      )}
     </View>
   );
 };

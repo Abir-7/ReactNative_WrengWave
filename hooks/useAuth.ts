@@ -7,7 +7,7 @@ import {
 } from "@/types/auth";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { Alert } from "react-native";
+import Toast from "react-native-toast-message";
 
 export function useLogin() {
   const router = useRouter();
@@ -18,6 +18,12 @@ export function useLogin() {
     mutationFn: ({ email, password }: any) =>
       authService.login(email, password),
     onSuccess: async (data) => {
+      Toast.show({
+        type: "success",
+        text1: "Login Successful",
+        text2: `Welcome back, ${data.name || data.email}`,
+      });
+
       // First set the basic info from login
       setUser({
         role: data.role,
@@ -42,10 +48,11 @@ export function useLogin() {
       }
     },
     onError: (error: any) => {
-      Alert.alert(
-        "Login Failed",
-        error.response?.data?.message || "Something went wrong",
-      );
+      Toast.show({
+        type: "error",
+        text1: "Login Failed",
+        text2: error.response?.data?.message || "Something went wrong",
+      });
     },
   });
 }
@@ -73,16 +80,22 @@ export function useSignup() {
   return useMutation({
     mutationFn: (data: SignupPayload) => authService.signup(data),
     onSuccess: (_, variables) => {
+      Toast.show({
+        type: "success",
+        text1: "Account Created",
+        text2: "Please verify your email to continue",
+      });
       router.push({
         pathname: "/(auth)/verify-otp",
         params: { email: variables.email, type: "signup" },
       });
     },
     onError: (error: any) => {
-      Alert.alert(
-        "Signup Failed",
-        error.response?.data?.message || "Something went wrong",
-      );
+      Toast.show({
+        type: "error",
+        text1: "Signup Failed",
+        text2: error.response?.data?.message || "Something went wrong",
+      });
     },
   });
 }
@@ -93,16 +106,22 @@ export function useForgotPassword() {
   return useMutation({
     mutationFn: (email: string) => authService.forgotPassword(email),
     onSuccess: (_, email) => {
+      Toast.show({
+        type: "success",
+        text1: "OTP Sent",
+        text2: "Check your email for the verification code",
+      });
       router.push({
         pathname: "/(auth)/verify-otp",
         params: { email, type: "forgot-password" },
       });
     },
     onError: (error: any) => {
-      Alert.alert(
-        "Error",
-        error.response?.data?.message || "Could not send reset code",
-      );
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error.response?.data?.message || "Could not send reset code",
+      });
     },
   });
 }
@@ -113,6 +132,11 @@ export function useVerifyOtp() {
   return useMutation({
     mutationFn: (data: VerifyOtpPayload) => authService.verifyOtp(data),
     onSuccess: (_, variables) => {
+      Toast.show({
+        type: "success",
+        text1: "Verified",
+        text2: "OTP verified successfully",
+      });
       if (variables.type === "signup") {
         router.replace("/");
       } else {
@@ -123,10 +147,11 @@ export function useVerifyOtp() {
       }
     },
     onError: (error: any) => {
-      Alert.alert(
-        "Verification Failed",
-        error.response?.data?.message || "Invalid OTP",
-      );
+      Toast.show({
+        type: "error",
+        text1: "Verification Failed",
+        text2: error.response?.data?.message || "Invalid OTP",
+      });
     },
   });
 }
@@ -137,15 +162,19 @@ export function useResetPassword() {
   return useMutation({
     mutationFn: (data: ResetPasswordPayload) => authService.resetPassword(data),
     onSuccess: () => {
-      Alert.alert("Success", "Password reset successfully", [
-        { text: "OK", onPress: () => router.replace("/") },
-      ]);
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Password reset successfully",
+      });
+      router.replace("/");
     },
     onError: (error: any) => {
-      Alert.alert(
-        "Error",
-        error.response?.data?.message || "Failed to reset password",
-      );
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error.response?.data?.message || "Failed to reset password",
+      });
     },
   });
 }

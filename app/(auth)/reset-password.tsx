@@ -18,7 +18,7 @@ export default function ResetPasswordScreen() {
       email,
       otp,
       password: data.password,
-      confirm_password: data.confirmPassword,
+      confirm_password: data.confirm_password,
     });
   };
 
@@ -32,7 +32,7 @@ export default function ResetPasswordScreen() {
       schema={resetPasswordSchema}
       defaultValues={{
         password: "",
-        confirmPassword: "",
+        confirm_password: "",
       }}
       showBackButton
       onBack={() => router.back()}
@@ -46,7 +46,7 @@ export default function ResetPasswordScreen() {
 
       <FormInput
         label="Confirm New Password"
-        name="confirmPassword"
+        name="confirm_password"
         placeholder="••••••••"
         secureTextEntry
       />
