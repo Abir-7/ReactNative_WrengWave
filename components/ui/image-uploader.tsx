@@ -1,3 +1,4 @@
+import { ENV } from "@/app_config/config";
 import { fileService } from "@/services/file.service";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -57,7 +58,7 @@ export const ImageUploader = ({
 
     try {
       const uploadedUrl = await fileService.uploadImage(uri);
-      setImage(`http://10.10.12.70:8000${uploadedUrl.uri}`);
+      setImage(`${ENV.BASE_URL}${uploadedUrl.uri}`);
       if (onUploadSuccess) {
         onUploadSuccess(uploadedUrl.image_id);
       }

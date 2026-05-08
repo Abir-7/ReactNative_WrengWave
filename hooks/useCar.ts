@@ -1,7 +1,8 @@
-import { carService } from "@/services/car.service";
-import { AddCarResponse } from "@/types/car";
 import { CarFormData } from "@/schemas/car.schema";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { carService } from "@/services/car.service";
+import { userService } from "@/services/user.service";
+import { AddCarResponse } from "@/types/car";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 
@@ -18,10 +19,10 @@ export function useAddCar() {
         text1: "Success",
         text2: "Car added successfully",
       });
-      
+
       // Invalidate cars list query if you have one (e.g., ['cars'])
       queryClient.invalidateQueries({ queryKey: ["cars"] });
-      
+
       router.back();
     },
     onError: (error: any) => {
@@ -34,3 +35,10 @@ export function useAddCar() {
     },
   });
 }
+
+export const useGetUserCars = () => {
+  return useQuery({
+    queryKey: ["cars"],
+    queryFn: userService.getUserCars,
+  });
+};

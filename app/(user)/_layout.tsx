@@ -30,6 +30,12 @@ export default function UserLayout() {
           href: null, // 👈 this removes it from the tab bar
         }}
       />
+      <Tabs.Screen
+        name="new_issue"
+        options={{
+          href: null, // 👈 this removes it from the tab bar
+        }}
+      />
     </Tabs>
   );
 }
