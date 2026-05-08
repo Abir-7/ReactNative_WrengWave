@@ -75,7 +75,10 @@ export const FormWrapper = <T extends FieldValues>({
             className={`bg-black py-4 rounded-xl items-center mt-10 ${
               isPending ? "opacity-70" : ""
             }`}
-            onPress={methods.handleSubmit(onSubmit)}
+            onPress={methods.handleSubmit((data) => {
+              onSubmit(data);
+              methods.reset();
+            })}
             disabled={isPending}
           >
             {isPending ? (

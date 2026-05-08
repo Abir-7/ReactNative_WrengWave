@@ -48,11 +48,12 @@ export const ImageUploader = ({
 
   const uploadImage = async (uri: string) => {
     setUploading(true);
+
     try {
       const uploadedUrl = await fileService.uploadImage(uri);
-      setImage(uploadedUrl);
+      setImage(`http://10.10.12.70:8000${uploadedUrl.uri}`);
       if (onUploadSuccess) {
-        onUploadSuccess(uploadedUrl);
+        onUploadSuccess(uploadedUrl.image_id);
       }
     } catch (error) {
       console.error("Upload failed", error);

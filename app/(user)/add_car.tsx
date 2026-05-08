@@ -26,37 +26,35 @@ export default function AddCar() {
           brand: "",
           model: "",
           year: "",
-          licensePlate: "",
-          image: "",
+          license_plate: "",
+          car_image_id: "",
         }}
         onSubmit={onSubmit}
         showBackButton
         onBack={() => router.back()}
       >
-        <FormImageUploader name="image" label="Car Image" />
-        
-        <FormInput
-          name="brand"
-          label="Brand"
-          placeholder="e.g. Toyota"
-        />
-        
-        <FormInput
-          name="model"
-          label="Model"
-          placeholder="e.g. Corolla"
-        />
-        
+        <FormImageUploader name="car_image_id" label="Car Image" />
+
+        <FormInput name="brand" label="Brand" placeholder="e.g. Toyota" />
+
+        <FormInput name="model" label="Model" placeholder="e.g. Corolla" />
+
         <FormInput
           name="year"
           label="Year"
           placeholder="e.g. 2022"
           keyboardType="numeric"
         />
-        
+
         <FormInput
-          name="licensePlate"
+          name="license_plate"
           label="License Plate"
+          placeholder="e.g. ABC-1234"
+          autoCapitalize="characters"
+        />
+        <FormInput
+          name="tag_number"
+          label="Tag Number"
           placeholder="e.g. ABC-1234"
           autoCapitalize="characters"
         />

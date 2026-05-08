@@ -6,7 +6,6 @@ import {
   forgotPasswordSchema,
 } from "@/schemas/auth.schema";
 import { useRouter } from "expo-router";
-import { Text } from "react-native";
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
@@ -27,11 +26,6 @@ export default function ForgotPasswordScreen() {
       defaultValues={{ email: "" }}
       showBackButton
       onBack={() => router.back()}
-      footerContent={
-        <>
-          <Text onPress={() => router.replace("/(user)/add_car")}>Add Car</Text>
-        </>
-      }
     >
       <FormInput
         label="Email Address"
