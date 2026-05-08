@@ -12,9 +12,9 @@ export default function SignupScreen() {
 
   const signupMutation = useSignup();
 
-  const onSubmit = (data: SignupFormValues) => {
+  const onSubmit = async (data: SignupFormValues) => {
     const { confirm_password, full_name, ...rest } = data;
-    signupMutation.mutate({ ...rest, name: full_name, role });
+    await signupMutation.mutateAsync({ ...rest, name: full_name, role });
   };
 
   return (

@@ -9,9 +9,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function AddCar() {
   const router = useRouter();
 
-  const onSubmit = (data: CarFormData) => {
+  const onSubmit = async (data: CarFormData) => {
     console.log("Form Data:", data);
     // Handle form submission (e.g., call an API)
+    // Simulating API call
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     router.back();
   };
 

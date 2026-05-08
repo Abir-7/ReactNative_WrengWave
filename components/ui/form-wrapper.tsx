@@ -19,7 +19,7 @@ import { z } from "zod";
 interface FormWrapperProps<T extends FieldValues> {
   title: string;
   subtitle?: string;
-  onSubmit: (data: T) => void;
+  onSubmit: (data: T) => Promise<void> | void;
   submitLabel: string;
   isPending?: boolean;
   footerContent?: React.ReactNode;
@@ -35,7 +35,7 @@ export const FormWrapper = <T extends FieldValues>({
   subtitle,
   onSubmit,
   submitLabel,
-  isPending,
+  isPending: externalIsPending,
   footerContent,
   children,
   showBackButton,
@@ -43,12 +43,27 @@ export const FormWrapper = <T extends FieldValues>({
   schema,
   defaultValues,
 }: FormWrapperProps<T>) => {
+  const [internalIsPending, setInternalIsPending] = React.useState(false);
+  const isPending = externalIsPending ?? internalIsPending;
+
   const methods = useForm<T>({
     resolver: zodResolver(schema),
     defaultValues,
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
+
+  const handleFormSubmit = async (data: T) => {
+    try {
+      setInternalIsPending(true);
+      await onSubmit(data);
+      methods.reset();
+    } catch (error) {
+      console.error("Form submission error:", error);
+    } finally {
+      setInternalIsPending(false);
+    }
+  };
 
   return (
     <FormProvider {...methods}>
@@ -75,10 +90,7 @@ export const FormWrapper = <T extends FieldValues>({
             className={`bg-black py-4 rounded-xl items-center mt-10 ${
               isPending ? "opacity-70" : ""
             }`}
-            onPress={methods.handleSubmit((data) => {
-              onSubmit(data);
-              methods.reset();
-            })}
+            onPress={methods.handleSubmit(handleFormSubmit)}
             disabled={isPending}
           >
             {isPending ? (

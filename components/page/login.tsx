@@ -9,8 +9,8 @@ export default function LoginScreen() {
   const router = useRouter();
   const loginMutation = useLogin();
 
-  const onSubmit = (data: LoginFormValues) => {
-    loginMutation.mutate(data);
+  const onSubmit = async (data: LoginFormValues) => {
+    await loginMutation.mutateAsync(data);
   };
 
   return (

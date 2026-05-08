@@ -13,8 +13,8 @@ export default function ResetPasswordScreen() {
 
   const resetPasswordMutation = useResetPassword();
 
-  const onSubmit = (data: ResetPasswordFormValues) => {
-    resetPasswordMutation.mutate({
+  const onSubmit = async (data: ResetPasswordFormValues) => {
+    await resetPasswordMutation.mutateAsync({
       email,
       otp,
       password: data.password,

@@ -11,8 +11,8 @@ export default function ForgotPasswordScreen() {
   const router = useRouter();
   const forgotPasswordMutation = useForgotPassword();
 
-  const onSubmit = (data: ForgotPasswordFormValues) => {
-    forgotPasswordMutation.mutate(data.email);
+  const onSubmit = async (data: ForgotPasswordFormValues) => {
+    await forgotPasswordMutation.mutateAsync(data.email);
   };
 
   return (
