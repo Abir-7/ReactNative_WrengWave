@@ -15,8 +15,8 @@ export default function VerifyOtpScreen() {
 
   const verifyOtpMutation = useVerifyUser();
 
-  const onSubmit = (data: VerifyOtpFormValues) => {
-    verifyOtpMutation.mutate({
+  const onSubmit = async (data: VerifyOtpFormValues) => {
+    await verifyOtpMutation.mutateAsync({
       user_id,
       code: data.otp,
       type: type,
