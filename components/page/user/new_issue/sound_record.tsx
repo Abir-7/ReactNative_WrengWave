@@ -9,7 +9,7 @@ import {
   useAudioRecorderState,
 } from "expo-audio";
 import { useEffect, useRef, useState } from "react";
-import { Alert, Animated, TouchableOpacity, View } from "react-native";
+import { Alert, Animated, Text, TouchableOpacity, View } from "react-native";
 
 export default function RecordSound() {
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
@@ -125,57 +125,60 @@ export default function RecordSound() {
   const barColor = isRecording ? "#f87171" : isPlaying ? "#fb923c" : "#fb923c";
 
   return (
-    <View className="  items-center justify-center bg-[#FFF4E6]">
-      <View className="flex-row items-center  rounded-full px-4 py-3 gap-4">
-        {/* Play / Pause — always visible, disabled if no recording */}
-        <TouchableOpacity
-          onPress={togglePlay}
-          disabled={!hasRecording || isRecording}
-          className={`w-11 h-11 rounded-full items-center justify-center ${
-            hasRecording && !isRecording ? "bg-orange-400" : "bg-orange-400"
-          }`}
-          activeOpacity={0.7}
-        >
-          <Ionicons
-            name={isPlaying ? "pause" : "play"}
-            size={18}
-            color={hasRecording && !isRecording ? "#fff" : "#aaa"}
-          />
-        </TouchableOpacity>
-
-        {/* Animated waveform */}
-        <View
-          className="flex-row  justify-center items-center gap-0.5 flex-1"
-          style={{ height: 40 }}
-        >
-          {bars.map((h, i) => (
-            <Animated.View
-              key={i}
-              style={{
-                width: 3,
-                height: h * 2,
-                borderRadius: 99,
-                backgroundColor: barColor,
-                transform: [{ scaleY: animValues[i] }],
-              }}
+    <View className="">
+      <Text className="text-lg font-medium text-gray-600 mb-2">Voice Note</Text>
+      <View className="  items-center justify-center bg-[#FFF4E6] rounded-lg">
+        <View className="flex-row items-center  rounded-full px-4 py-3 gap-4">
+          {/* Play / Pause — always visible, disabled if no recording */}
+          <TouchableOpacity
+            onPress={togglePlay}
+            disabled={!hasRecording || isRecording}
+            className={`w-11 h-11 rounded-full items-center justify-center ${
+              hasRecording && !isRecording ? "bg-orange-400" : "bg-orange-200"
+            }`}
+            activeOpacity={0.7}
+          >
+            <Ionicons
+              name={isPlaying ? "pause" : "play"}
+              size={18}
+              color={hasRecording && !isRecording ? "#fff" : "#fff"}
             />
-          ))}
-        </View>
+          </TouchableOpacity>
 
-        {/* Record / Stop — always visible */}
-        <TouchableOpacity
-          onPress={toggleRecord}
-          className={`w-11 h-11 rounded-full items-center justify-center ${
-            isRecording ? "bg-red-500" : "bg-orange-400"
-          }`}
-          activeOpacity={0.7}
-        >
-          {isRecording ? (
-            <View className="w-4 h-4 rounded-sm bg-white" />
-          ) : (
-            <View className="w-3.5 h-3.5 rounded-full bg-white" />
-          )}
-        </TouchableOpacity>
+          {/* Animated waveform */}
+          <View
+            className="flex-row  justify-center items-center gap-0.5 flex-1"
+            style={{ height: 40 }}
+          >
+            {bars.map((h, i) => (
+              <Animated.View
+                key={i}
+                style={{
+                  width: 3,
+                  height: h * 2,
+                  borderRadius: 99,
+                  backgroundColor: barColor,
+                  transform: [{ scaleY: animValues[i] }],
+                }}
+              />
+            ))}
+          </View>
+
+          {/* Record / Stop — always visible */}
+          <TouchableOpacity
+            onPress={toggleRecord}
+            className={`w-11 h-11 rounded-full items-center justify-center ${
+              isRecording ? "bg-red-500" : "bg-orange-400"
+            }`}
+            activeOpacity={0.7}
+          >
+            {isRecording ? (
+              <View className="w-4 h-4 rounded-sm bg-white" />
+            ) : (
+              <View className="w-3.5 h-3.5 rounded-full bg-white" />
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
