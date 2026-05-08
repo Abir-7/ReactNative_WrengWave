@@ -1,7 +1,7 @@
 import { fileService } from "@/services/file.service";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -25,6 +25,12 @@ export const ImageUploader = ({
 }: ImageUploaderProps) => {
   const [image, setImage] = useState<string | null>(initialImage || null);
   const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    if (!initialImage) {
+      setImage(null);
+    }
+  }, [initialImage]);
 
   const pickImage = async () => {
     // Request permission first (good practice)
