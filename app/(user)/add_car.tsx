@@ -1,6 +1,7 @@
 import { FormImageUploader } from "@/components/ui/form-image-uploader";
 import { FormInput } from "@/components/ui/form-input";
 import { FormWrapper } from "@/components/ui/form-wrapper";
+import { useAddCar } from "@/hooks/useCar";
 import { CarFormData, carSchema } from "@/schemas/car.schema";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -8,13 +9,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AddCar() {
   const router = useRouter();
+  const addCarMutation = useAddCar();
 
   const onSubmit = async (data: CarFormData) => {
-    console.log("Form Data:", data);
-    // Handle form submission (e.g., call an API)
-    // Simulating API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    router.back();
+    await addCarMutation.mutateAsync(data);
   };
 
   return (
@@ -24,11 +22,13 @@ export default function AddCar() {
         subtitle="Enter your car details below"
         submitLabel="Add Car"
         schema={carSchema}
+        isPending={addCarMutation.isPending}
         defaultValues={{
           brand: "",
           model: "",
           year: "",
           license_plate: "",
+          tag_number: "",
           car_image_id: "",
         }}
         onSubmit={onSubmit}
