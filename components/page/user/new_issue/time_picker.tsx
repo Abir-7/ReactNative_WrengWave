@@ -1,320 +1,312 @@
-import { useRef, useState } from "react";
+import React, { useState } from "react";
 import {
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  ScrollView,
+  Dimensions,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 
-const ITEM_HEIGHT = 44;
-const VISIBLE = 3;
+const { width } = Dimensions.get("window");
+const CLOCK_SIZE = width * 0.75;
+const CX = CLOCK_SIZE / 2;
+const CY = CLOCK_SIZE / 2;
+const R = CLOCK_SIZE / 2 - 20;
 
-const hours = Array.from({ length: 12 }, (_, i) =>
-  String(i + 1).padStart(2, "0"),
-);
+export default function TimePicker() {
+  const [mode, setMode] = useState("h"); // 'h' | 'm'
+  const [hour, setHour] = useState(10);
+  const [minute, setMinute] = useState(0);
+  const [ampm, setAmpm] = useState("AM");
+  const [confirmed, setConfirmed] = useState(null);
 
-const minutes = Array.from({ length: 60 }, (_, i) =>
-  String(i).padStart(2, "0"),
-);
+  const pad = (n) => String(n).padStart(2, "0");
 
-function Drum({
-  data,
-  initialIndex = 0,
-  onChange,
-  width = 60,
-}: {
-  data: string[];
-  initialIndex?: number;
-  onChange?: (val: string) => void;
-  width?: number;
-}) {
-  const ref = useRef<ScrollView>(null);
-  const selectedRef = useRef(initialIndex);
-  const [selected, setSelected] = useState(initialIndex);
+  const hourNums = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  const minNums = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
+  const nums = mode === "h" ? hourNums : minNums;
 
-  const snap = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const index = Math.round(e.nativeEvent.contentOffset.y / ITEM_HEIGHT);
+  const getNumPos = (index) => {
+    const angle = (-90 + index * 30) * (Math.PI / 180);
+    return {
+      x: CX + Math.cos(angle) * (R - 24),
+      y: CY + Math.sin(angle) * (R - 24),
+    };
+  };
 
-    const clamped = Math.max(0, Math.min(data.length - 1, index));
+  const handleClockPress = (evt) => {
+    const { locationX: lx, locationY: ly } = evt.nativeEvent;
+    const mx = lx - CX;
+    const my = ly - CY;
+    const dist = Math.sqrt(mx * mx + my * my);
+    if (dist < 28 || dist > R + 10) return;
 
-    if (clamped !== selectedRef.current) {
-      selectedRef.current = clamped;
-      setSelected(clamped);
-      onChange?.(data[clamped]);
+    let best = null,
+      bestD = 999;
+    nums.forEach((v, i) => {
+      const { x, y } = getNumPos(i);
+      const d = Math.sqrt((lx - x) ** 2 + (ly - y) ** 2);
+      if (d < bestD) {
+        bestD = d;
+        best = v;
+      }
+    });
+
+    if (best !== null) {
+      if (mode === "h") {
+        setHour(best);
+        setTimeout(() => setMode("m"), 200);
+      } else {
+        setMinute(best);
+      }
     }
-
-    ref.current?.scrollTo({
-      y: clamped * ITEM_HEIGHT,
-      animated: true,
-    });
   };
 
-  return (
-    <View
-      style={{
-        width,
-        height: ITEM_HEIGHT * VISIBLE,
-        overflow: "hidden",
-      }}
-    >
-      {/* Top fade */}
-      <View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: ITEM_HEIGHT,
-          zIndex: 2,
-          backgroundColor: "rgba(255,255,255,0.75)",
-        }}
-      />
-
-      {/* Bottom fade */}
-      <View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: ITEM_HEIGHT,
-          zIndex: 2,
-          backgroundColor: "rgba(255,255,255,0.75)",
-        }}
-      />
-
-      <ScrollView
-        ref={ref}
-        showsVerticalScrollIndicator={false}
-        snapToInterval={ITEM_HEIGHT}
-        decelerationRate="fast"
-        contentOffset={{
-          x: 0,
-          y: initialIndex * ITEM_HEIGHT,
-        }}
-        onMomentumScrollEnd={snap}
-        onScrollEndDrag={snap}
-        scrollEventThrottle={16}
-        nestedScrollEnabled
-        bounces={false}
-        contentContainerStyle={{
-          paddingTop: ITEM_HEIGHT,
-          paddingBottom: ITEM_HEIGHT,
-        }}
-      >
-        {data.map((item, index) => {
-          const distance = Math.abs(index - selected);
-
-          return (
-            <View
-              key={index}
-              style={{
-                height: ITEM_HEIGHT,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: distance === 0 ? 24 : distance === 1 ? 18 : 15,
-                  fontWeight: distance === 0 ? "600" : "400",
-                  color:
-                    distance === 0
-                      ? "#111827"
-                      : distance === 1
-                        ? "#6B7280"
-                        : "#D1D5DB",
-                  fontVariant: ["tabular-nums"],
-                }}
-              >
-                {item}
-              </Text>
-            </View>
-          );
-        })}
-      </ScrollView>
-    </View>
-  );
-}
-
-type Props = {
-  onChange?: (time: { hour: string; minute: string; period: string }) => void;
-};
-
-export default function TimePicker({ onChange }: Props) {
-  const [hour, setHour] = useState("09");
-  const [minute, setMinute] = useState("32");
-  const [period, setPeriod] = useState<"AM" | "PM">("AM");
-
-  const hourRef = useRef("09");
-  const minuteRef = useRef("32");
-  const periodRef = useRef<"AM" | "PM">("AM");
-
-  const notify = (h: string, m: string, p: string) => {
-    onChange?.({
-      hour: h,
-      minute: m,
-      period: p,
-    });
-  };
+  const selectedIndex = nums.indexOf(mode === "h" ? hour : minute);
+  const handPos = selectedIndex >= 0 ? getNumPos(selectedIndex) : null;
 
   return (
-    <View style={{ gap: 20 }}>
-      {/* Live Display */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "baseline",
-          gap: 6,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 44,
-            fontWeight: "300",
-            color: "#111827",
-            letterSpacing: -1,
-            fontVariant: ["tabular-nums"],
-          }}
-        >
-          {hour}:{minute}
-        </Text>
-
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: "500",
-            color: "#6B7280",
-          }}
-        >
-          {period}
-        </Text>
-      </View>
-
-      {/* Picker Section */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 16,
-        }}
-      >
-        {/* Drums */}
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: "#FFFFFF",
-            borderRadius: 16,
-            borderWidth: 1,
-            borderColor: "#E5E7EB",
-            overflow: "hidden",
-            position: "relative",
-          }}
-        >
-          {/* Active selector */}
-          <View
-            pointerEvents="none"
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: 8,
-              right: 8,
-              height: ITEM_HEIGHT,
-              marginTop: -ITEM_HEIGHT / 2,
-              backgroundColor: "#F9FAFB",
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: "#E5E7EB",
-              zIndex: 1,
-            }}
-          />
-
-          <Drum
-            data={hours}
-            initialIndex={8}
-            width={70}
-            onChange={(v) => {
-              hourRef.current = v;
-              setHour(v);
-
-              notify(v, minuteRef.current, periodRef.current);
-            }}
-          />
-
-          <Text
-            style={{
-              fontSize: 26,
-              fontWeight: "300",
-              color: "#9CA3AF",
-              zIndex: 2,
-            }}
-          >
-            :
+    <View style={styles.container}>
+      <View style={styles.card}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.timeBig}>
+            {pad(hour)}:{pad(minute)}
           </Text>
-
-          <Drum
-            data={minutes}
-            initialIndex={32}
-            width={70}
-            onChange={(v) => {
-              minuteRef.current = v;
-              setMinute(v);
-
-              notify(hourRef.current, v, periodRef.current);
-            }}
-          />
-        </View>
-
-        {/* AM PM */}
-        <View
-          style={{
-            gap: 8,
-          }}
-        >
-          {(["AM", "PM"] as const).map((p) => {
-            const active = period === p;
-
-            return (
+          <View style={styles.apCol}>
+            {["AM", "PM"].map((v) => (
               <TouchableOpacity
-                key={p}
-                activeOpacity={0.8}
-                onPress={() => {
-                  periodRef.current = p;
-                  setPeriod(p);
-
-                  notify(hourRef.current, minuteRef.current, p);
-                }}
-                style={{
-                  width: 58,
-                  height: 46,
-                  borderRadius: 12,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderWidth: 1,
-                  borderColor: active ? "#111827" : "#E5E7EB",
-                  backgroundColor: active ? "#111827" : "#F9FAFB",
-                }}
+                key={v}
+                style={[styles.apBtn, ampm === v && styles.apBtnOn]}
+                onPress={() => setAmpm(v)}
               >
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: active ? "600" : "500",
-                    color: active ? "#FFFFFF" : "#6B7280",
-                  }}
-                >
-                  {p}
+                <Text style={[styles.apText, ampm === v && styles.apTextOn]}>
+                  {v}
                 </Text>
               </TouchableOpacity>
-            );
-          })}
+            ))}
+          </View>
+        </View>
+
+        {/* Tabs */}
+        <View style={styles.tabs}>
+          {["h", "m"].map((t) => (
+            <TouchableOpacity
+              key={t}
+              style={[styles.tab, mode === t && styles.tabOn]}
+              onPress={() => setMode(t)}
+            >
+              <Text style={[styles.tabText, mode === t && styles.tabTextOn]}>
+                {t === "h" ? "Hour" : "Minute"}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Clock face */}
+        <View style={styles.clockWrap}>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={handleClockPress}
+            style={styles.clockFace}
+          >
+            {/* Hand line */}
+            {handPos && (
+              <View
+                style={[
+                  styles.hand,
+                  {
+                    width: Math.sqrt(
+                      (handPos.x - CX) ** 2 + (handPos.y - CY) ** 2,
+                    ),
+                    transform: [
+                      { translateX: CX },
+                      { translateY: CY },
+                      {
+                        rotate: `${
+                          Math.atan2(handPos.y - CY, handPos.x - CX) *
+                          (180 / Math.PI)
+                        }deg`,
+                      },
+                      { translateX: 0 },
+                    ],
+                  },
+                ]}
+              />
+            )}
+
+            {/* Center dot */}
+            <View style={styles.centerDot} />
+
+            {/* Numbers */}
+            {nums.map((v, i) => {
+              const { x, y } = getNumPos(i);
+              const isSel = v === (mode === "h" ? hour : minute);
+              return (
+                <View
+                  key={v}
+                  style={[
+                    styles.numCircle,
+                    isSel && styles.numCircleSel,
+                    { left: x - 20, top: y - 20 },
+                  ]}
+                >
+                  <Text style={[styles.numText, isSel && styles.numTextSel]}>
+                    {mode === "h" ? v : pad(v)}
+                  </Text>
+                </View>
+              );
+            })}
+          </TouchableOpacity>
+        </View>
+
+        {/* Footer */}
+        <View style={styles.footer}>
+          <TouchableOpacity
+            style={styles.btnCancel}
+            onPress={() => {
+              setHour(12);
+              setMinute(0);
+              setAmpm("AM");
+              setMode("h");
+            }}
+          >
+            <Text style={styles.btnCancelText}>Reset</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btnConfirm}
+            onPress={() => setConfirmed(`${pad(hour)}:${pad(minute)} ${ampm}`)}
+          >
+            <Text style={styles.btnConfirmText}>Set time</Text>
+          </TouchableOpacity>
         </View>
       </View>
+
+      {/* Result */}
+      {confirmed && (
+        <View style={styles.result}>
+          <Text style={styles.resultTime}>{confirmed}</Text>
+          <Text style={styles.resultLabel}>Alarm set</Text>
+        </View>
+      )}
     </View>
   );
 }
+
+const ACCENT = "#534AB7";
+
+const styles = StyleSheet.create({
+  container: { padding: 16, backgroundColor: "#fff", flex: 1 },
+  card: {
+    borderRadius: 14,
+    borderWidth: 0.5,
+    borderColor: "#e0e0d8",
+    overflow: "hidden",
+    backgroundColor: "#fff",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 16,
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#e0e0d8",
+  },
+  timeBig: {
+    fontSize: 38,
+    fontWeight: "500",
+    color: "#1a1a18",
+    letterSpacing: -0.5,
+  },
+  apCol: { gap: 6 },
+  apBtn: {
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 0.5,
+    borderColor: "#e0e0d8",
+  },
+  apBtnOn: { backgroundColor: "#1a1a18", borderColor: "#1a1a18" },
+  apText: { fontSize: 13, fontWeight: "500", color: "#888" },
+  apTextOn: { color: "#fff" },
+  tabs: {
+    flexDirection: "row",
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#e0e0d8",
+  },
+  tab: {
+    flex: 1,
+    padding: 10,
+    alignItems: "center",
+    borderBottomWidth: 2,
+    borderBottomColor: "transparent",
+  },
+  tabOn: { borderBottomColor: "#1a1a18" },
+  tabText: { fontSize: 13, color: "#888" },
+  tabTextOn: { fontWeight: "500", color: "#1a1a18" },
+  clockWrap: { alignItems: "center", padding: 20 },
+  clockFace: {
+    width: CLOCK_SIZE,
+    height: CLOCK_SIZE,
+    borderRadius: CLOCK_SIZE / 2,
+    backgroundColor: "#f1efe8",
+  },
+  hand: {
+    position: "absolute",
+    height: 2,
+    backgroundColor: ACCENT,
+    transformOrigin: "left center",
+  },
+  centerDot: {
+    position: "absolute",
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: ACCENT,
+    left: CX - 4,
+    top: CY - 4,
+  },
+  numCircle: {
+    position: "absolute",
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  numCircleSel: { backgroundColor: ACCENT },
+  numText: { fontSize: 14, color: "#1a1a18" },
+  numTextSel: { color: "#fff", fontWeight: "500" },
+  footer: {
+    flexDirection: "row",
+    gap: 8,
+    padding: 12,
+    borderTopWidth: 0.5,
+    borderTopColor: "#e0e0d8",
+  },
+  btnCancel: {
+    flex: 1,
+    padding: 11,
+    alignItems: "center",
+    borderRadius: 8,
+    borderWidth: 0.5,
+    borderColor: "#e0e0d8",
+  },
+  btnCancelText: { fontSize: 15, color: "#888" },
+  btnConfirm: {
+    flex: 2,
+    padding: 11,
+    alignItems: "center",
+    borderRadius: 8,
+    backgroundColor: "#1a1a18",
+  },
+  btnConfirmText: { fontSize: 15, fontWeight: "500", color: "#fff" },
+  result: {
+    marginTop: 12,
+    padding: 14,
+    backgroundColor: "#f1efe8",
+    borderRadius: 10,
+  },
+  resultTime: { fontSize: 20, fontWeight: "500", color: "#1a1a18" },
+  resultLabel: { fontSize: 12, color: "#888", marginTop: 2 },
+});

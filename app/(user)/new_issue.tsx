@@ -1,7 +1,7 @@
 import DamageImageUpload from "@/components/page/user/new_issue/damage_image";
-import DateTimePicker from "@/components/page/user/new_issue/date_picker";
+import { CalendarPicker } from "@/components/page/user/new_issue/date_picker";
 import RecordSound from "@/components/page/user/new_issue/sound_record";
-import TimePicker from "@/components/page/user/new_issue/time_picker";
+
 import React from "react";
 import { ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -24,8 +24,7 @@ const New_issue = () => {
             className="border border-gray-300 rounded-xl p-4 h-32"
           />
         </View>
-        <DateTimePicker></DateTimePicker>
-        <TimePicker onChange={(t) => console.log(t)} />
+        <CalendarPicker></CalendarPicker>
       </ScrollView>
     </SafeAreaView>
   );
