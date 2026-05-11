@@ -1,6 +1,7 @@
 import DamageImageUpload from "@/components/page/user/new_issue/damage_image";
 import { CalendarPicker } from "@/components/page/user/new_issue/date_picker";
 import RecordSound from "@/components/page/user/new_issue/sound_record";
+import TimePicker from "@/components/page/user/new_issue/time_picker";
 
 import React from "react";
 import { ScrollView, Text, TextInput, View } from "react-native";
@@ -25,6 +26,7 @@ const New_issue = () => {
           />
         </View>
         <CalendarPicker></CalendarPicker>
+        <TimePicker></TimePicker>
       </ScrollView>
     </SafeAreaView>
   );
