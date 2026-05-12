@@ -69,7 +69,7 @@ export const FormWrapper = <T extends FieldValues>({
     <FormProvider {...methods}>
       <ScrollView
         className="flex-1 bg-white"
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerClassName="flex-grow"
         keyboardShouldPersistTaps="handled"
       >
         <View className="px-6 py-12 justify-center flex-1">

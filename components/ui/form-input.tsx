@@ -53,7 +53,6 @@ export const FormInput = ({
               } rounded-xl px-4 py-3 text-base text-gray-900 ${
                 isPasswordField ? "pr-12" : ""
               } ${inputClassName}`}
-              style={error ? { borderColor: "#ef4444" } : {}}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -77,10 +76,7 @@ export const FormInput = ({
         )}
       />
       {error && (
-        <Text 
-          className="text-red-500 text-sm mt-1 ml-1"
-          style={{ color: "#ef4444" }}
-        >
+        <Text className="text-red-500 text-sm mt-1 ml-1">
           {error}
         </Text>
       )}

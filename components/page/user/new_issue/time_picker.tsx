@@ -29,49 +29,26 @@ const Time_picker = () => {
   return (
     <View>
       <Text className="text-lg font-medium text-gray-600 mb-2">
-        Slected Time
+        Selected Time
       </Text>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: 1,
-          paddingBottom: 2,
-        }}
-      >
+      <View className="flex-row justify-between items-center p-0.5 pb-1">
         {alarmString !== null ? (
-          <Text style={{ color: "#202020", fontSize: 28 }}>{alarmString}</Text>
+          <Text className="text-[#202020] text-[28px] font-medium">
+            {alarmString}
+          </Text>
         ) : (
-          <Text style={{ color: "#202020", fontSize: 28 }}>12:00 PM</Text>
+          <Text className="text-[#202020] text-[28px] font-medium">
+            12:00 PM
+          </Text>
         )}
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={() => setShowPicker(true)}
+          className="items-center"
         >
-          <View style={{ alignItems: "center" }}>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => setShowPicker(true)}
-            >
-              <View style={{}}>
-                <Text
-                  style={{
-                    paddingVertical: 10,
-                    paddingHorizontal: 18,
-                    borderWidth: 1,
-                    borderRadius: 10,
-                    fontSize: 16,
-                    overflow: "hidden",
-                    borderColor: "#8C8C8C",
-                    color: "#8C8C8C",
-                  }}
-                >
-                  {"Set Time"}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          <Text className="py-2.5 px-[18px] border border-[#8C8C8C] rounded-[10px] text-base overflow-hidden text-[#8C8C8C]">
+            Set Time
+          </Text>
         </TouchableOpacity>
         <TimerPickerModal
           hideSeconds
@@ -86,7 +63,6 @@ const Time_picker = () => {
           setIsVisible={setShowPicker}
           styles={{
             theme: "light",
-            container: {},
             contentContainer: { width: 300 },
             pickerColumnWidth: {
               hours: 120,

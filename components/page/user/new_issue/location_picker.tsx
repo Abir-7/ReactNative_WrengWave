@@ -63,55 +63,23 @@ export default function LocationPicker({
   };
 
   return (
-    <View
-      style={{
-        backgroundColor: "#fff",
-        marginHorizontal: 16,
-        marginTop: 24,
-        borderRadius: 16,
-        overflow: "hidden",
-        borderWidth: 1,
-        borderColor: "#f3f4f6",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.08,
-        shadowRadius: 4,
-        elevation: 2,
-      }}
-    >
+    <View className="bg-white mx-4 mt-6 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
       {/* Title */}
-      <Text
-        style={{
-          fontSize: 16,
-          fontWeight: "600",
-          color: "#111827",
-          paddingHorizontal: 16,
-          paddingTop: 16,
-          paddingBottom: 12,
-        }}
-      >
+      <Text className="text-base font-semibold text-gray-900 px-4 pt-4 pb-3">
         Location
       </Text>
 
       {/* Divider */}
-      <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />
+      <View className="h-[1px] bg-gray-200" />
 
       {/* Address Row */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingHorizontal: 16,
-          paddingVertical: 14,
-          gap: 12,
-        }}
-      >
+      <View className="flex-row items-center px-4 py-3.5 gap-3">
         <Ionicons name="location-sharp" size={22} color="#6b7280" />
 
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
-          style={{ flex: 1, fontSize: 15, color: "#1f2937" }}
+          className="flex-1 text-[15px] text-gray-800"
         >
           {address}
         </Text>
@@ -126,32 +94,16 @@ export default function LocationPicker({
       </View>
 
       {/* Divider */}
-      <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />
+      <View className="h-[1px] bg-gray-200" />
 
       {/* Use Current Location */}
       <TouchableOpacity
         onPress={handleUseCurrentLocation}
         disabled={loading}
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          paddingVertical: 14,
-          gap: 10,
-        }}
+        className="flex-row items-center justify-center py-3.5 gap-2.5"
         accessibilityLabel="Use current location"
       >
-        <View
-          style={{
-            width: 28,
-            height: 28,
-            borderRadius: 14,
-            borderWidth: 2,
-            borderColor: "#2563eb",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        <View className="w-7 h-7 rounded-full border-2 border-blue-600 items-center justify-center">
           <Ionicons
             name={loading ? "reload" : "locate"}
             size={14}
@@ -159,7 +111,7 @@ export default function LocationPicker({
           />
         </View>
 
-        <Text style={{ fontSize: 14, fontWeight: "500", color: "#2563eb" }}>
+        <Text className="text-sm font-medium text-blue-600">
           {loading ? "Fetching location…" : "Use current location"}
         </Text>
       </TouchableOpacity>

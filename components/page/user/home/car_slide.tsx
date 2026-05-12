@@ -15,7 +15,6 @@ export default function CarSlider({
         horizontal
         keyExtractor={(item) => item.id}
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 0 }}
         ItemSeparatorComponent={() => <View className="w-3" />}
         renderItem={({ item }) => (
           <View className="w-48 h-32 bg-gray-50 rounded-lg border border-gray-200 overflow-hidden flex-col ">
