@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useGetMe } from "@/hooks/useAuth";
 import { useAuthStore } from "@/store/auth.store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -13,10 +14,11 @@ const queryClient = new QueryClient();
 
 export default function RootLayout() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <RootLayoutNav />
-      <Toast />
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <RootLayoutNav />
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
 
@@ -40,6 +42,7 @@ function RootLayoutNav() {
         <Stack.Screen name="(mechanic)" options={{ headerShown: false }} />
         <Stack.Screen name="(user)" options={{ headerShown: false }} />
       </Stack>
+      <Toast />
     </>
   );
 }

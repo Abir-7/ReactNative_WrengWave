@@ -7,9 +7,9 @@ export default function AdminLayout() {
       screenOptions={{ tabBarActiveTintColor: "#e63946", headerShown: false }}
     >
       <Tabs.Screen
-        name="dashboard"
+        name="home"
         options={{
-          title: "Dashboard",
+          title: "Home",
           tabBarIcon: ({ color }) => (
             <Ionicons name="grid" size={22} color={color} />
           ),
@@ -23,6 +23,12 @@ export default function AdminLayout() {
           tabBarIcon: ({ color }) => (
             <Ionicons name="settings" size={22} color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="add_mechanic_data"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

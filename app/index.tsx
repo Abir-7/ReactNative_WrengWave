@@ -1,27 +1,31 @@
 import LoginScreen from "@/components/page/login";
 import { useAuthStore } from "@/store/auth.store";
-import { Redirect } from "expo-router";
+import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 
 export default function Index() {
   const user = useAuthStore((state) => state.user);
   const isLoading = useAuthStore((state) => state.isLoading);
+  const router = useRouter();
 
-  // Still loading from AsyncStorage
-  if (isLoading) {
+  useEffect(() => {
+    if (!isLoading && user?.token) {
+      if (user.role === "mechanic") {
+        router.replace("/(mechanic)/home");
+      } else {
+        router.replace("/(user)/home");
+      }
+    }
+  }, [isLoading, user?.token, user?.role, router]);
+
+  // Still loading from AsyncStorage or redirecting
+  if (isLoading || user?.token) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
         <ActivityIndicator size="large" color="#000" />
       </View>
     );
-  }
-
-  // Already logged in → redirect based on role
-  if (user?.token) {
-    if (user.role === "mechanic") {
-      return <Redirect href="/(mechanic)/home" />;
-    }
-    return <Redirect href="/(user)/home" />;
   }
 
   // Not logged in → show login
