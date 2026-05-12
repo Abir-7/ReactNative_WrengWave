@@ -47,6 +47,13 @@
           "enableBackgroundPlayback": false,
           "enableBackgroundRecording": false
         }]
+        ,
+         [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow app to use your location."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

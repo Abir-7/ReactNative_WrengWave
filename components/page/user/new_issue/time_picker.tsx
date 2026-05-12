@@ -1,10 +1,9 @@
+import { LinearGradient } from "expo-linear-gradient"; // or `import LinearGradient from "react-native-linear-gradient"`
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-
-import { LinearGradient } from "expo-linear-gradient";
 import { TimerPickerModal } from "react-native-timer-picker";
 
-const TimePicker = () => {
+const Time_picker = () => {
   const [showPicker, setShowPicker] = useState(false);
   const [alarmString, setAlarmString] = useState<string | null>(null);
 
@@ -15,57 +14,90 @@ const TimePicker = () => {
     hours?: number;
     minutes?: number;
   }) => {
-    const timeParts = [];
+    if (hours === undefined) return "";
 
-    if (hours !== undefined) {
-      timeParts.push(hours.toString().padStart(2, "0"));
-    }
+    const period = hours >= 12 ? "PM" : "AM";
 
-    if (minutes !== undefined) {
-      timeParts.push(minutes.toString().padStart(2, "0"));
-    }
+    const formattedHours = hours % 12 || 12;
 
-    return timeParts.join(":");
+    const formattedMinutes =
+      minutes !== undefined ? minutes.toString().padStart(2, "0") : "00";
+
+    return `${formattedHours}:${formattedMinutes} ${period}`;
   };
 
   return (
-    <View className="flex-1 items-center justify-center bg-[#514242]">
-      <Text className="text-[18px] text-[#F1F1F1]">
-        {alarmString !== null ? "Alarm set for" : "No alarm set"}
+    <View>
+      <Text className="text-lg font-medium text-gray-600 mb-2">
+        Slected Time
       </Text>
-
-      {alarmString !== null && (
-        <Text className="mt-2 text-[48px] text-[#F1F1F1]">{alarmString}</Text>
-      )}
-
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={() => setShowPicker(true)}
-        className="mt-8"
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: 1,
+          paddingBottom: 2,
+        }}
       >
-        <Text className="overflow-hidden rounded-[10px] border border-[#C2C2C2] px-[18px] py-[10px] text-[16px] text-[#C2C2C2]">
-          Set Alarm 🔔
-        </Text>
-      </TouchableOpacity>
-
-      <TimerPickerModal
-        hideSeconds
-        visible={showPicker}
-        setIsVisible={setShowPicker}
-        onCancel={() => setShowPicker(false)}
-        onConfirm={(pickedDuration) => {
-          setAlarmString(formatTime(pickedDuration));
-          setShowPicker(false);
-        }}
-        closeOnOverlayPress
-        modalTitle="Set Alarm"
-        LinearGradient={LinearGradient}
-        modalProps={{
-          overlayOpacity: 0.2,
-        }}
-      />
+        {alarmString !== null ? (
+          <Text style={{ color: "#202020", fontSize: 28 }}>{alarmString}</Text>
+        ) : (
+          <Text style={{ color: "#202020", fontSize: 28 }}>12:00 PM</Text>
+        )}
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => setShowPicker(true)}
+        >
+          <View style={{ alignItems: "center" }}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => setShowPicker(true)}
+            >
+              <View style={{}}>
+                <Text
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 18,
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    fontSize: 16,
+                    overflow: "hidden",
+                    borderColor: "#8C8C8C",
+                    color: "#8C8C8C",
+                  }}
+                >
+                  {"Set Time"}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+        <TimerPickerModal
+          hideSeconds
+          closeOnOverlayPress
+          LinearGradient={LinearGradient}
+          modalTitle="Set Time"
+          onCancel={() => setShowPicker(false)}
+          onConfirm={(pickedDuration) => {
+            setAlarmString(formatTime(pickedDuration));
+            setShowPicker(false);
+          }}
+          setIsVisible={setShowPicker}
+          styles={{
+            theme: "light",
+            container: {},
+            contentContainer: { width: 300 },
+            pickerColumnWidth: {
+              hours: 120,
+            },
+          }}
+          use12HourPicker
+          visible={showPicker}
+        />
+      </View>
     </View>
   );
 };
 
-export default TimePicker;
+export default Time_picker;
